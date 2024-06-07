@@ -1,38 +1,209 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
 .App {
   text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
+  font-family: 'Montserrat', sans-serif;
+  background-color: #ffffff;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+}
+
+.App-header {
+  background-color: #2c2f36;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+h1 {
+  margin-bottom: 20px;
+  font-size: 2em;
+  color: #6636B3;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.input-field {
+  padding: 10px;
+  width: 80%;
+  max-width: 400px;
+  margin-bottom: 20px;
+  border: 2px solid #6636B3;
+  border-radius: 5px;
+}
+
+.fetch-button, .download-button {
+  background-color: #6636B3;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.fetch-button:hover, .download-button:hover {
+  background-color: #6636B3;
+}
+
+.select-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.select-logo, .select-gradient {
+  margin: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 2px solid #6636B3;
+  cursor: pointer;
+}
+
+.image-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.image-wrapper {
+  position: relative;
+  width: 400px;
+  height: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* Changed from space-between to flex-start */
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: white;
+  border-radius: 15px;
+  background-size: cover, cover;
+  background-position: center, center;
+  overflow: hidden;
+}
+
+.template-logo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.2;
+  z-index: 0;
+}
+
+.header {
+  position: absolute;
+  top: 14px;
+  left: 10px;
+  display: flex;
+  align-items: center;
+  z-index: 1;
+}
+
+.bringist-logo {
+  max-width: 100px;
+  max-height: 60px;
+}
+
+.top-right-logo {
+  position: absolute;
+  top: -2px;
+  right: -320px;
+  max-width: 50px;
+  max-height: 50px;
+}
+
+.brand-and-name {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: -520px; /* Updated */
+  z-index: 1;
+}
+
+.brand-name {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.product-name {
+  font-size: 1.2em;
+  color: #ffffff; /* White color for product name */
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  z-index: 1;
+  margin-top: 45px; /* Updated */
+}
+
+.product-image {
+  max-width: 80%;
+  max-height: 80%;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px; /* Updated */
+}
+
+.price-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  z-index: 1;
+  margin-top: 412px; /* Updated */
+}
+
+.price-details {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.original-price {
+  text-decoration: line-through;
+  margin-right: 12px;
+}
+
+.discounted-price {
+  color: #6636B3;
+  font-weight: bold;
+}
+
+.discount-badge {
+  position: absolute;
+  top: 110px;
+  right: 90px;
+  background-color: #6636B3;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 1em;
+  z-index: 1;
+}
+
+.loader {
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #6636B3;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

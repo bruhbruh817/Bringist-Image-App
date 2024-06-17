@@ -1,39 +1,38 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { toPng } from 'html-to-image';
+import { toPng } from 'dom-to-image';
 import download from 'downloadjs';
+import Template1 from './Template1';
 import './App.css';
-import bringistLogo from './bringist.png';
-import templateLogo from './logo_checkered.png';
-import adidasLogo from './adidas.png';
-import nikeLogo from './nike.png';
-import pumaLogo from './puma.png';
 
 function App() {
-  const [url, setUrl] = useState('');
-  const [imageUrl, setImageUrl] = useState('');
-  const [originalPrice, setOriginalPrice] = useState('');
-  const [discountedPrice, setDiscountedPrice] = useState('');
-  const [name, setName] = useState('');
-  const [brand, setBrand] = useState('');
-  const [discountPercentage, setDiscountPercentage] = useState('');
-  const [gradient, setGradient] = useState('linear-gradient(102.11deg, rgba(102, 54, 179, 0.8) 2.24%, rgba(161, 112, 223, 0.8) 50.27%, rgba(212, 165, 245, 0.8) 98.95%)');
-  const [logo, setLogo] = useState('');
+  const [inputs, setInputs] = useState([{ url: '' }]);
+  const [designs, setDesigns] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [gradient, setGradient] = useState('linear-gradient(102.11deg, rgba(102, 54, 179, 0.8) 2.24%, rgba(161, 112, 223, 0.8) 50.27%, rgba(212, 165, 245, 0.8) 98.95%)');
 
-  const fetchDetails = async () => {
+  const fetchDetails = async (index) => {
     setLoading(true);
     try {
-      const encodedUrl = encodeURIComponent(url);
+      const encodedUrl = encodeURIComponent(inputs[index].url);
       const response = await axios.get(`http://localhost:5000/fetch-details?url=${encodedUrl}`);
       const { imageUrl, originalPrice, discountedPrice, name, brand, discountPercentage } = response.data;
 
-      setImageUrl(imageUrl);
-      setOriginalPrice(originalPrice);
-      setDiscountedPrice(discountedPrice);
-      setName(name);
-      setBrand(brand);
-      setDiscountPercentage(discountPercentage);
+      const newDesign = {
+        imageUrl,
+        originalPrice,
+        discountedPrice,
+        name,
+        brand,
+        discountPercentage,
+        gradient,
+        logo: 'bringist.jpg', // Include the bringist logo by default
+        template: 'template1',
+      };
+
+      const updatedDesigns = [...designs];
+      updatedDesigns[index] = newDesign;
+      setDesigns(updatedDesigns);
     } catch (error) {
       console.error('Error fetching details:', error);
       alert('Error fetching the page. Please try again.');
@@ -41,89 +40,103 @@ function App() {
     setLoading(false);
   };
 
-  const handleDownload = () => {
-    toPng(document.getElementById('image-with-price'))
+  const handleDownload = (index) => {
+    const element = document.getElementById(`design-${index}`);
+    const scale = 4; // Scale up by 4 times
+
+    const clonedElement = element.cloneNode(true);
+    clonedElement.style.transform = `scale(${scale})`;
+    clonedElement.style.transformOrigin = 'top left';
+    clonedElement.style.width = `${element.offsetWidth * scale}px`;
+    clonedElement.style.height = `${element.offsetHeight * scale}px`;
+
+    document.body.appendChild(clonedElement);
+
+    toPng(clonedElement)
       .then((dataUrl) => {
-        download(dataUrl, 'image.png');
+        download(dataUrl, `image-${index + 1}.png`);
+        document.body.removeChild(clonedElement);
       })
       .catch((error) => {
-        console.error('something went wrong!', error);
+        console.error('Something went wrong!', error);
+        document.body.removeChild(clonedElement);
       });
   };
 
-  const handleGradientChange = (event) => {
-    setGradient(event.target.value);
+  const handleDownloadAll = () => {
+    designs.forEach((_, index) => handleDownload(index));
   };
 
-  const handleLogoChange = (event) => {
-    const selectedLogo = event.target.value;
-    if (selectedLogo === 'none') setLogo('');
-    if (selectedLogo === 'adidas') setLogo(adidasLogo);
-    if (selectedLogo === 'nike') setLogo(nikeLogo);
-    if (selectedLogo === 'puma') setLogo(pumaLogo);
+  const addInput = () => {
+    setInputs([...inputs, { url: '' }]);
+  };
+
+  const removeInput = (index) => {
+    setInputs(inputs.filter((_, i) => i !== index));
+    setDesigns(designs.filter((_, i) => i !== index));
+  };
+
+  const updateInput = (index, value) => {
+    const newInputs = [...inputs];
+    newInputs[index].url = value;
+    setInputs(newInputs);
+  };
+
+  const renderTemplate = (design, index) => {
+    return (
+      <div id={`design-${index}`} key={index}>
+        <Template1
+          imageUrl={design.imageUrl}
+          originalPrice={design.originalPrice}
+          discountedPrice={design.discountedPrice}
+          name={design.name}
+          brand={design.brand}
+          discountPercentage={design.discountPercentage}
+          gradient={design.gradient}
+          logo={design.logo}
+        />
+        <button onClick={() => handleDownload(index)} className="download-button">Download</button>
+      </div>
+    );
   };
 
   return (
     <div className="App">
       <header className="App-header">
         <h1>Bringist Image Builder</h1>
-        <input
-          type="text"
-          placeholder="Enter product URL"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          className="input-field"
-        />
-        <button onClick={fetchDetails} className="fetch-button">Load Image</button>
+        {inputs.map((input, index) => (
+          <div key={index} className="design-inputs">
+            <input
+              type="text"
+              placeholder="Enter product URL"
+              value={input.url}
+              onChange={(e) => updateInput(index, e.target.value)}
+              className="input-field"
+            />
+            <button onClick={() => fetchDetails(index)} className="fetch-button">Load Image</button>
+            <button onClick={() => removeInput(index)} className="add-remove-button">×</button>
+          </div>
+        ))}
+        <button onClick={addInput} className="add-remove-button">+</button>
         <div className="select-container">
-          <select onChange={handleGradientChange} className="select-gradient">
+          <select onChange={(e) => setGradient(e.target.value)} className="select-gradient">
             <option value="linear-gradient(102.11deg, rgba(102, 54, 179, 0.8) 2.24%, rgba(161, 112, 223, 0.8) 50.27%, rgba(212, 165, 245, 0.8) 98.95%)">Purple</option>
             <option value="linear-gradient(102.11deg, rgba(112, 69, 175, 0.8) 2.24%, rgba(138, 99, 210, 0.8) 50.27%, rgba(180, 134, 243, 0.8) 98.95%)">Lavender</option>
             <option value="linear-gradient(102.11deg, rgba(52, 0, 134, 0.8) 2.24%, rgba(102, 54, 179, 0.8) 50.27%, rgba(161, 112, 223, 0.8) 98.95%)">Violet</option>
             <option value="linear-gradient(102.11deg, rgba(40, 0, 104, 0.9) 2.24%, rgba(82, 43, 143, 0.9) 50.27%, rgba(129, 90, 179, 0.9) 98.95%)">Deep Purple</option>
           </select>
-          <select onChange={handleLogoChange} className="select-logo">
-            <option value="none">None</option>
-            <option value="adidas">Adidas</option>
-            <option value="nike">Nike</option>
-            <option value="puma">Puma</option>
-          </select>
         </div>
         {loading ? (
           <div className="loader"></div>
         ) : (
-          imageUrl && (
-            <div className="image-container">
-              <div id="image-with-price" className="image-wrapper" style={{ backgroundImage: `${gradient}` }}>
-                <img src={templateLogo} alt="Template Logo" className="template-logo" />
-                <div className="header">
-                  <img src={bringistLogo} alt="Bringist Logo" className="bringist-logo" />
-                  {logo && <img src={logo} alt="Logo" className="top-right-logo" />}
-                </div>
-                <div className="content">
-                  <img src={imageUrl} alt="Product" className="product-image" />
-                </div>
-                <div className="brand-and-name">
-                  <span className="brand-name">{brand}</span>
-                  <span className="product-name">{name}</span>
-                </div>
-                <div className="price-container">
-                  <div className="price-details">
-                    {originalPrice && (
-                      <span className="original-price">{originalPrice}</span>
-                    )}
-                    {discountedPrice && (
-                      <span className="discounted-price">{discountedPrice}</span>
-                    )}
-                  </div>
-                  {discountPercentage && (
-                    <div className="discount-badge">{discountPercentage}</div>
-                  )}
-                </div>
-              </div>
-              <button onClick={handleDownload} className="download-button">Download Image</button>
-            </div>
-          )
+          <div className="design-container">
+            {designs.map((design, index) => renderTemplate(design, index))}
+          </div>
+        )}
+        {designs.length > 0 && (
+          <div className="button-container">
+            <button onClick={handleDownloadAll} className="download-all-button">Download All</button>
+          </div>
         )}
       </header>
     </div>

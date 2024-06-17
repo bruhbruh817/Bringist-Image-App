@@ -34,7 +34,7 @@ h1 {
   border-radius: 5px;
 }
 
-.fetch-button, .download-button {
+.fetch-button, .download-button, .add-remove-button {
   background-color: #6636B3;
   color: white;
   border: none;
@@ -45,8 +45,8 @@ h1 {
   transition: background-color 0.3s ease;
 }
 
-.fetch-button:hover, .download-button:hover {
-  background-color: #6636B3;
+.fetch-button:hover, .download-button:hover, .add-remove-button:hover {
+  background-color: #b583d1;
 }
 
 .select-container {
@@ -63,135 +63,25 @@ h1 {
   cursor: pointer;
 }
 
-.image-container {
+.template-buttons {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  justify-content: center;
   margin-top: 20px;
 }
 
-.image-wrapper {
-  position: relative;
-  width: 400px;
-  height: 600px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start; /* Changed from space-between to flex-start */
-  padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  background-color: white;
-  border-radius: 15px;
-  background-size: cover, cover;
-  background-position: center, center;
-  overflow: hidden;
-}
-
-.template-logo {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0.2;
-  z-index: 0;
-}
-
-.header {
-  position: absolute;
-  top: 14px;
-  left: 10px;
-  display: flex;
-  align-items: center;
-  z-index: 1;
-}
-
-.bringist-logo {
-  max-width: 100px;
-  max-height: 60px;
-}
-
-.top-right-logo {
-  position: absolute;
-  top: -2px;
-  right: -320px;
-  max-width: 50px;
-  max-height: 50px;
-}
-
-.brand-and-name {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: -520px; /* Updated */
-  z-index: 1;
-}
-
-.brand-name {
-  font-size: 1.5em;
-  font-weight: bold;
-}
-
-.product-name {
-  font-size: 1.2em;
-  color: #ffffff; /* White color for product name */
-}
-
-.content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  z-index: 1;
-  margin-top: 45px; /* Updated */
-}
-
-.product-image {
-  max-width: 80%;
-  max-height: 80%;
-  border-radius: 15px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px; /* Updated */
-}
-
-.price-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  z-index: 1;
-  margin-top: 412px; /* Updated */
-}
-
-.price-details {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.original-price {
-  text-decoration: line-through;
-  margin-right: 12px;
-}
-
-.discounted-price {
-  color: #6636B3;
-  font-weight: bold;
-}
-
-.discount-badge {
-  position: absolute;
-  top: 110px;
-  right: 90px;
+.template-button {
   background-color: #6636B3;
   color: white;
-  padding: 5px 10px;
+  border: none;
+  padding: 10px 20px;
+  margin: 10px;
   border-radius: 5px;
-  font-size: 1em;
-  z-index: 1;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.template-button:hover {
+  background-color: #b583d1;
 }
 
 .loader {
@@ -204,6 +94,36 @@ h1 {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.design-inputs {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.design-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.button-container {
+  margin-top: 20px;
+}
+
+.design-wrapper {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+/* Add this class to hide the download button during the download process */
+.hide-download-button .download-button {
+  display: none;
 }

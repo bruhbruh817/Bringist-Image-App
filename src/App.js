@@ -26,7 +26,7 @@ function App() {
         brand,
         discountPercentage,
         gradient,
-        logo: 'bringist.jpg', // Include the bringist logo by default
+        logo: 'bringist.jpg',
         template: 'template1',
       };
 
@@ -42,7 +42,12 @@ function App() {
 
   const handleDownload = (index) => {
     const element = document.getElementById(`design-${index}`);
-    const scale = 4; // Scale up by 4 times
+    const button = element.querySelector('.download-button');
+    const scale = 4;
+
+    if (button) {
+      button.style.display = 'none';
+    }
 
     const clonedElement = element.cloneNode(true);
     clonedElement.style.transform = `scale(${scale})`;
@@ -52,15 +57,33 @@ function App() {
 
     document.body.appendChild(clonedElement);
 
-    toPng(clonedElement)
-      .then((dataUrl) => {
-        download(dataUrl, `image-${index + 1}.png`);
-        document.body.removeChild(clonedElement);
-      })
-      .catch((error) => {
-        console.error('Something went wrong!', error);
-        document.body.removeChild(clonedElement);
-      });
+    const images = Array.from(clonedElement.querySelectorAll('img'));
+    const loadImage = (img) => new Promise((resolve) => {
+      if (img.complete) {
+        resolve();
+      } else {
+        img.onload = resolve;
+        img.onerror = resolve;
+      }
+    });
+
+    Promise.all(images.map(loadImage)).then(() => {
+      toPng(clonedElement)
+        .then((dataUrl) => {
+          download(dataUrl, `image-${index + 1}.png`);
+          document.body.removeChild(clonedElement);
+          if (button) {
+            button.style.display = 'block';
+          }
+        })
+        .catch((error) => {
+          console.error('Something went wrong!', error);
+          document.body.removeChild(clonedElement);
+          if (button) {
+            button.style.display = 'block';
+          }
+        });
+    });
   };
 
   const handleDownloadAll = () => {
